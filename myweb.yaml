@@ -1,38 +1,25 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: nginx-deploy
   labels:
-    app: myweb
-  name: myweb
+    app: nginx
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: myweb
+      app: my-pod
   template:
     metadata:
       labels:
-        app: myweb
+        app: my-pod
     spec:
       containers:
-      - image: nginx
-        imagePullPolicy: Always
-        name: myweb
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: myweb
-  name: myweb
-spec:
-  ports:
-  - nodePort: 32223
-    port: 80
-    protocol: TCP
-    targetPort: 80
-  selector:
-    app: myweb
-  type: NodePort
+      - name: nginx
+        image: gcr.io/google-samples/hello-app:1.0
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
